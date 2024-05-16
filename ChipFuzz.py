@@ -444,8 +444,12 @@ def afl_run(scope: scopes.ScopeTypes, target, traces):
     rtraces = traces
     cnt = 0
 
-    files = [f for f in pathlib.Path().glob(os.path.join(args.afl, "*/queue/*")) if f.is_file()]
+    files = [f for f in pathlib.Path(args.afl).glob("*/queue/*") if f.is_file()]
     for file in files:
+        # ignore own output files
+        if args.output and os.path.commonprefix([file, args.output]) == args.output:
+            continue
+
         # only get new files
         x = pathlib.Path(file).stat().st_mtime
         if x < AFL_TIME:
@@ -531,6 +535,7 @@ def parse_arguments():
         log(INFO, "Radamsa mutator not enabled")
 
     if args.output:
+        args.output = os.path.abspath(args.output)
         if os.path.exists(args.output):
             log(CRIT, "Output directory already exists: {}".format(args.output))
             sys.exit(-1)
@@ -538,6 +543,7 @@ def parse_arguments():
             os.mkdir(args.output)
 
     if args.input:
+        args.input = os.path.abspath(args.input)
         if not os.path.exists(args.input):
             log(CRIT, "Input directory does not exist: {}".format(args.input))
             sys.exit(-1)
@@ -549,6 +555,7 @@ def parse_arguments():
         LENGTH = args.length
 
     if args.afl:
+        args.afl = os.path.abspath(args.afl)
         if not os.path.exists(args.afl):
             log(CRIT, "AFL sync directory does not exist: {}".format(args.input))
             sys.exit(-1)
