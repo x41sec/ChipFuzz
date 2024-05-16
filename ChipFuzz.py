@@ -389,9 +389,13 @@ def fuzz(scope: scopes.ScopeTypes, target, traces, ins: bytes):
     Returns:
         traces: full array of old and new traces along with the data.
     """
-    global IDLEWARN
+    global IDLEWARN, LENGTH, args
 
     rtraces = traces
+
+    if args and args.force_len:
+        if len(ins) != LENGTH:
+            return rtraces
 
     trace = xtest(scope, target, ins)
     check_abort(scope, target, ins)
@@ -527,6 +531,7 @@ def parse_arguments():
     parser.add_argument('--loglevel', default=1, type=int, choices=range(0, 4), nargs='?', help="Log output verbosity", required=False)
     parser.add_argument('--length', default=5, type=int, nargs='?', help="Length of fuzzinput (0 for unlimited)", required=False)
     parser.add_argument('--afl', default=None, nargs='?', help="AFL sync directory", required=False)
+    parser.add_argument('--force_len', default=False, action='store_true', help="Only use testcases of the length set by --length, this restricts AFL imported ones to this length", required=False)
 
     args = parser.parse_args()
 
