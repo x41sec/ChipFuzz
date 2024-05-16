@@ -6,7 +6,9 @@ might work as well but are not tested.
 
 ## Usage
 ~~~
-usage: ChipFuzz [-h] [--output [OUTPUT]] [--input [INPUT]] [--radamsa] [--loglevel [{0,1,2,3}]] [--length [LENGTH]] [--afl [AFL]]
+usage: ChipFuzz [-h] [--output [OUTPUT]] [--input [INPUT]] [--radamsa]
+                [--loglevel [{0,1,2,3}]] [--length [LENGTH]] [--afl [AFL]]
+                [--force_len]
 
 Use chipwhisperer power traces as fuzzing coverage information
 
@@ -19,6 +21,8 @@ optional arguments:
                         Log output verbosity
   --length [LENGTH]     Length of fuzzinput (0 for unlimited)
   --afl [AFL]           AFL sync directory
+  --force_len           Only use testcases of the length set by --length, this
+                        restricts AFL imported ones to this length
 
 By eric.sesterhenn@x41-dsec.de
 ~~~
